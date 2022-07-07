@@ -1,0 +1,16 @@
+program
+	add(ref a, b) {
+		a = a+b;
+		ref n;
+		b = share n;
+	}
+begin
+	ref x;
+	x = new class;
+	x = 1;
+	ref y;
+	y = new class;
+	y = 1+x;
+	begin add(x, y);
+	output(x);
+end

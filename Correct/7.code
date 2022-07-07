@@ -1,0 +1,13 @@
+program
+	int x;
+	int y;
+begin
+	x=10;
+	y=1;
+	while y < x {
+		ref z;
+		z = new class;
+		z = 100;
+		y = y+1;
+	}
+end

@@ -1,0 +1,11 @@
+program
+	int m, n;
+	A(ref x) { output(x); }
+begin
+	m = 10;
+	n = 5;
+	ref z;
+	z = new class;
+	z = m+n;
+	begin A(z);
+end

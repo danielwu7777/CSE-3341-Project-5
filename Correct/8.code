@@ -1,0 +1,17 @@
+program
+	A(ref r) { 
+		if r < 1 then {
+			output(r);
+		} else {
+			ref n;
+			n = new class;
+			n = r-1;
+			begin A(n);
+		}
+	}
+begin
+	ref r;
+	r = new class;
+	r = 5;
+	begin A(r);
+end

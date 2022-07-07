@@ -1,0 +1,10 @@
+program
+	int x;
+begin
+	ref y;
+	ref z;
+	y = new class;
+	y = 10;
+	z = share y;
+	output(z);
+end

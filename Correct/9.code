@@ -1,0 +1,13 @@
+program
+	ref x;
+begin
+	x = new class;
+	x = 1;
+	if x<100 then {
+		ref x;
+		x = new class;
+		x = 10;
+		output(x);
+	}
+	output(x);
+end

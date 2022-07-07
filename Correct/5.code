@@ -1,0 +1,18 @@
+program
+	int m, n;
+	A(ref x) { 
+		ref y; 
+		y = new class; 
+		y = 8; 
+		output(x); 
+		x = share y; 
+	}
+begin
+	m = 10;
+	n = 5;
+	ref z;
+	z = new class;
+	z = m+n;
+	begin A(z);
+	output(m);
+end

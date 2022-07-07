@@ -1,0 +1,7 @@
+program
+	int x;
+begin
+	ref y;
+	x = 10;
+	output(x);
+end
