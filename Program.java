@@ -37,6 +37,7 @@ class Program {
 		}
 		Executor.pushFrame();
 		ss.execute();
+		Executor.clearReferences();
 		Executor.popFrame();
 	}
 }

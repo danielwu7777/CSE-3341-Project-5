@@ -47,6 +47,16 @@ class Executor {
 	}
 
 	static void popLocalScope() {
+		List<String> refVarsToCollect = new ArrayList<>();
+		HashMap<String, CoreVar> map = new HashMap<>();
+		map.putAll(stackSpace.peek().peek());
+		for (String identifier : map.keySet()) {
+			CoreVar x = map.get(identifier);
+			if (x.type.equals(Core.REF) && x.value != null) {
+				refVarsToCollect.add(identifier);
+			}
+		}
+		decrRefCounts(refVarsToCollect);
 		stackSpace.peek().pop();
 	}
 
@@ -132,6 +142,8 @@ class Executor {
 	static void referenceCopy(String var1, String var2) {
 		CoreVar x = getStackOrStatic(var1);
 		CoreVar y = getStackOrStatic(var2);
+		addRefCount(y.value);
+		subtractRefCountAtPos(x.value);
 		x.value = y.value;
 	}
 
@@ -170,11 +182,13 @@ class Executor {
 		for (int i = 0; i < formals.size(); i++) {
 			CoreVar temp = new CoreVar(Core.REF);
 			temp.value = getStackOrStatic(actuals.get(i)).value;
+			if (actuals.get(i) != null) {
+				addRefCount(i);
+			}
 			// System.out.println(formals.get(i) + " " + actuals.get(i) + " passing:" +
 			// temp.value+ " heap:" + heapSpace.get(temp.value));
 			newFrame.peek().put(formals.get(i), temp);
 		}
-
 		stackSpace.push(newFrame);
 		pushLocalScope();
 		return actuals;
@@ -184,13 +198,11 @@ class Executor {
 		List<String> refVarsToCollect = new ArrayList<>();
 		Stack<HashMap<String, CoreVar>> frame = new Stack<>();
 		frame.addAll(stackSpace.peek());
-		while (!frame.empty()) {
-			HashMap<String, CoreVar> map = frame.pop();
-			for (String identifier : map.keySet()) {
-				CoreVar x = map.get(identifier);
-				if (x.type.equals(Core.REF) && x.value != null) {
-					refVarsToCollect.add(identifier);
-				}
+		HashMap<String, CoreVar> map = frame.pop();
+		for (String identifier : map.keySet()) {
+			CoreVar x = map.get(identifier);
+			if (x.type.equals(Core.REF) && x.value != null) {
+				refVarsToCollect.add(identifier);
 			}
 		}
 		decrRefCounts(refVarsToCollect);
@@ -206,6 +218,9 @@ class Executor {
 
 	static void addRefCount(int position) {
 		refCounts.set(position, refCounts.get(position) + 1);
+		if (refCounts.get(position) == 1) {
+			printSumRefCounts();
+		}
 	}
 
 	static void decrRefCounts(List<String> refVars) {
@@ -216,18 +231,30 @@ class Executor {
 	}
 
 	static void subtractRefCountAtPos(int position) {
-		refCounts.set(position, refCounts.get(position) - 1);
-		if (refCounts.get(position) == 0) {
-			printSumRefCounts();
+		if (refCounts.get(position) >= 1) {
+			refCounts.set(position, refCounts.get(position) - 1);
+			if (refCounts.get(position) == 0) {
+				printSumRefCounts();
+			}
 		}
 	}
 
 	static void printSumRefCounts() {
-		int sum = 0;
-		for (int numOfReferences : refCounts) {
-			sum += numOfReferences;
+		int numReachable = 0;
+		for (int i : refCounts) {
+			if (i > 0) {
+				numReachable++;
+			}
 		}
-		System.out.println("gc:" + sum);
+		System.out.println("gc:" + numReachable);
 	}
 
+	static void clearReferences() {
+		for (int i = 0; i < refCounts.size(); i++) {
+			if (refCounts.get(i) > 0) {
+				refCounts.set(i, 0);
+				printSumRefCounts();
+			}
+		}
+	}
 }
