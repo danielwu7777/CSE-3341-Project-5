@@ -16,7 +16,7 @@ for value in {0..9}
 do
 	echo ""
 	echo "Running ${value}.code"
-	timeout 5 ${runner} Correct/${value}.code Correct/${value}.data > Correct/${value}.student
+	${runner} Correct/${value}.code Correct/${value}.data > Correct/${value}.student
 	echo "Running diff with ${value}.expected"
 	grep -o '[[:digit:]]\+' Correct/${value}.student > Correct/temp1
 	grep -o '[[:digit:]]\+' Correct/${value}.expected > Correct/temp2

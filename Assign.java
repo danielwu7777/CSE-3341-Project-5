@@ -61,6 +61,7 @@ class Assign implements Stmt {
 		} else if (type == 1) {
 			// Doing a "new"-assign
 			assignTo.heapAllocate();
+			Executor.refCountsAllocate();
 		} else if (type == 2) {
 			// Doing a "share"-assign
 			assignTo.referenceCopy(assignFrom);
