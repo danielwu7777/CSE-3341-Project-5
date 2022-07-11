@@ -142,8 +142,12 @@ class Executor {
 	static void referenceCopy(String var1, String var2) {
 		CoreVar x = getStackOrStatic(var1);
 		CoreVar y = getStackOrStatic(var2);
-		addRefCount(y.value);
-		subtractRefCountAtPos(x.value);
+		if (y.value != null) {
+			addRefCount(y.value);
+		}
+		if (x.value != null) {
+			subtractRefCountAtPos(x.value);
+		}
 		x.value = y.value;
 	}
 
