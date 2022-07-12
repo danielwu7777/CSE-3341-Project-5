@@ -32,9 +32,8 @@ class FuncCall implements Stmt {
 	public void execute() {
 		Formals formalParams = Executor.getFormalParams(funcName);
 		StmtSeq body = Executor.getBody(funcName);
-		List<String> actuals = Executor.pushFrame(formalParams, actualParams);
+		Executor.pushFrame(formalParams, actualParams);
 		body.execute();
 		Executor.popFrame();	
-		Executor.decrRefCounts(actuals);	
 	}
 }

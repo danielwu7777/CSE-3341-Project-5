@@ -198,16 +198,19 @@ class Executor {
 		return actuals;
 	}
 
-	static void popFrame() { /////////////////////////////////////// FIX THIS
+	static void popFrame() {
 		List<String> refVarsToCollect = new ArrayList<>();
 		// Make a copy of the top of stackSpace
 		Stack<HashMap<String, CoreVar>> frame = new Stack<>();
 		frame.addAll(stackSpace.peek());
-		HashMap<String, CoreVar> map = frame.pop();
-		for (String identifier : map.keySet()) {
-			CoreVar x = map.get(identifier);
-			if (x.type.equals(Core.REF) && x.value != null) {
-				refVarsToCollect.add(identifier);
+		HashMap<String, CoreVar> map;
+		while (frame.size() > 0) {
+			map = frame.pop();
+			for (String identifier : map.keySet()) {
+				CoreVar x = map.get(identifier);
+				if (x.type.equals(Core.REF) && x.value != null) {
+					refVarsToCollect.add(identifier);
+				}
 			}
 		}
 		decrRefCounts(refVarsToCollect);
@@ -236,11 +239,9 @@ class Executor {
 	}
 
 	static void subtractRefCountAtPos(int position) {
-		if (refCounts.get(position) >= 1) {
-			refCounts.set(position, refCounts.get(position) - 1);
-			if (refCounts.get(position) == 0) {
-				printSumRefCounts();
-			}
+		refCounts.set(position, refCounts.get(position) - 1);
+		if (refCounts.get(position) == 0) {
+			printSumRefCounts();
 		}
 	}
 
