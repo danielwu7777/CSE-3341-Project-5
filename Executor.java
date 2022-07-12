@@ -198,8 +198,9 @@ class Executor {
 		return actuals;
 	}
 
-	static void popFrame() {
+	static void popFrame() { /////////////////////////////////////// FIX THIS
 		List<String> refVarsToCollect = new ArrayList<>();
+		// Make a copy of the top of stackSpace
 		Stack<HashMap<String, CoreVar>> frame = new Stack<>();
 		frame.addAll(stackSpace.peek());
 		HashMap<String, CoreVar> map = frame.pop();
